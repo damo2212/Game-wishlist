@@ -1,0 +1,398 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Damon’s Game Wishlist</title>
+
+  <style>
+    :root{
+      --bg:#0b0e14;
+      --card:#121826;
+      --card2:#0f1420;
+      --text:#e8ecff;
+      --muted:#a8b1d6;
+      --accent:#4cc9ff;
+      --accent2:#a855f7;
+      --good:#22c55e;
+      --warn:#f59e0b;
+      --bad:#ef4444;
+      --border:rgba(255,255,255,.08);
+      --shadow:0 18px 55px rgba(0,0,0,.45);
+      --radius:18px;
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(900px 500px at 20% -10%, rgba(76,201,255,.20), transparent 60%),
+        radial-gradient(900px 500px at 90% 0%, rgba(168,85,247,.18), transparent 55%),
+        radial-gradient(800px 550px at 50% 110%, rgba(34,197,94,.10), transparent 60%),
+        var(--bg);
+      min-height:100vh;
+      padding:26px;
+    }
+
+    .wrap{ max-width:1100px; margin:0 auto; }
+
+    header{
+      display:flex;
+      gap:16px;
+      align-items:flex-start;
+      justify-content:space-between;
+      flex-wrap:wrap;
+      margin-bottom:18px;
+    }
+
+    .title{
+      display:flex; flex-direction:column; gap:6px;
+    }
+    h1{
+      font-size: clamp(26px, 3vw, 40px);
+      margin:0;
+      letter-spacing:.3px;
+    }
+    .subtitle{
+      color:var(--muted);
+      max-width:700px;
+      line-height:1.4;
+    }
+
+    .controls{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:flex-end;
+    }
+
+    .pill{
+      background:rgba(255,255,255,.06);
+      border:1px solid var(--border);
+      padding:10px 12px;
+      border-radius:999px;
+      backdrop-filter: blur(10px);
+      display:flex;
+      gap:10px;
+      align-items:center;
+      box-shadow: 0 10px 30px rgba(0,0,0,.20);
+    }
+
+    input[type="search"]{
+      width:min(320px, 70vw);
+      background:transparent;
+      border:none;
+      outline:none;
+      color:var(--text);
+      font-size:14px;
+    }
+
+    select{
+      background:transparent;
+      border:1px solid transparent;
+      color:var(--text);
+      outline:none;
+      font-size:14px;
+      cursor:pointer;
+    }
+    select option{ color:#111; }
+
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap:16px;
+      margin-top:14px;
+    }
+
+    .card{
+      position:relative;
+      border-radius:var(--radius);
+      overflow:hidden;
+      border:1px solid var(--border);
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      box-shadow: var(--shadow);
+      transform: translateZ(0);
+      transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+    }
+
+    .card:hover{
+      transform: translateY(-4px) scale(1.01);
+      border-color: rgba(76,201,255,.30);
+      box-shadow: 0 25px 80px rgba(0,0,0,.60);
+    }
+
+    .cover{
+      height:260px;
+      background: radial-gradient(220px 160px at 30% 30%, rgba(76,201,255,.25), transparent 55%),
+                  radial-gradient(220px 160px at 75% 20%, rgba(168,85,247,.18), transparent 55%),
+                  var(--card2);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+    }
+
+    .cover img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+      filter:saturate(1.05) contrast(1.05);
+    }
+
+    .info{
+      padding:12px 12px 14px;
+      background: rgba(10,12,18,.35);
+      backdrop-filter: blur(10px);
+    }
+
+    .name{
+      font-weight:700;
+      line-height:1.25;
+      margin:0 0 6px 0;
+      font-size:16px;
+    }
+
+    .meta{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+      margin-bottom:10px;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .tag{
+      font-size:12px;
+      padding:4px 8px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.05);
+      color:var(--text);
+    }
+
+    .badge{
+      position:absolute;
+      top:10px;
+      left:10px;
+      font-size:12px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background: rgba(0,0,0,.35);
+      backdrop-filter: blur(10px);
+    }
+    .badge.top{ border-color: rgba(239,68,68,.35); }
+    .badge.high{ border-color: rgba(245,158,11,.35); }
+    .badge.mid{ border-color: rgba(76,201,255,.35); }
+    .badge.low{ border-color: rgba(34,197,94,.35); }
+
+    .priceRow{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      margin-top:10px;
+    }
+
+    .price{
+      font-weight:800;
+      letter-spacing:.2px;
+      color: var(--accent);
+    }
+
+    .btn{
+      text-decoration:none;
+      color:var(--text);
+      font-size:13px;
+      padding:8px 10px;
+      border-radius:12px;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.06);
+      transition: transform .14s ease, border-color .14s ease;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      white-space:nowrap;
+    }
+    .btn:hover{
+      transform: translateY(-1px);
+      border-color: rgba(76,201,255,.35);
+    }
+
+    footer{
+      margin-top:18px;
+      color:var(--muted);
+      font-size:13px;
+      text-align:center;
+      opacity:.9;
+    }
+
+    .hidden{ display:none !important; }
+
+    /* mobile tweaks */
+    @media (max-width: 520px){
+      .cover{ height:240px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <header>
+      <div class="title">
+        <h1> Damon’s Game Wishlist</h1>
+        <div class="subtitle">
+          Picked for gifts. Search or sort to find stuff fast. Clicking a game opens the store link.
+        </div>
+      </div>
+
+      <div class="controls">
+        <div class="pill">
+           <input id="search" type="search" placeholder="Search games, platform, notes…" />
+        </div>
+
+        <div class="pill">
+          Sort:
+          <select id="sort">
+            <option value="priority">Priority</option>
+            <option value="priceLow">Price: Low → High</option>
+            <option value="priceHigh">Price: High → Low</option>
+            <option value="name">Name: A → Z</option>
+          </select>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <div id="grid" class="grid"></div>
+    </main>
+
+    <footer>
+      edit list in file if you know how to
+    </footer>
+  </div>
+
+  <script>
+    // ====== EDIT YOUR WISHLIST HERE ======
+    // cover: use any image URL (Steam capsule, Nintendo eShop image, etc.)
+    // price: put a number (ex: 59.99). If unknown, set null.
+    const games = [
+      {
+        name: "Lone echo",
+        platform: "PCVR (Meta)",
+        price: 19.99,
+        priority: "Top", // Top / High / Medium / Low
+        link: "https://www.meta.com/experiences/pcvr/lone-echo/1368187813209608/?srsltid=AfmBOor7v4RijuQ1VMMGQVRJ-GrXqyAgrPOW1lFI16EC6RlhHgdbZjM3#reviews",
+        cover: "https://upload.wikimedia.org/wikipedia/en/e/ef/Lone_Echo_game.png",
+        notes: "really cool space game just watch the trailer and you'll see"
+      },
+      {
+        name: "Batman Arkham Shadow",
+        platform: "Vr (Meta)",
+        price: 49.99,
+        priority: "Top",
+        link: "https://www.meta.com/experiences/batman-arkham-shadow/3551691271620960/",
+        cover: "https://sm.ign.com/ign_nordic/cover/b/batman-ark/batman-arkham-shadow_3v5j.jpg",
+        notes: "Cool fighting adventure game, I heard its reeeeaalllyy good"
+      },
+      {
+        name: "Example Game 3",
+        platform: "PC and PCVR (Steam)",
+        price: 29.99,
+        priority: "Top",
+        link: "https://store.steampowered.com/app/264710/Subnautica/",
+        cover: "https://cdn1.epicgames.com/offer/jaguar/SN_EpicPortrait_1200x1800-f5ebad930a2f6eb715579a056807033f_1200x1600-a4410497e04b7826486cf68e24cdd08e",
+        notes: "If you couldn't tell, I like Adventure games. Underwater exploration and adventure game."
+      }
+    ];
+    // ====== END EDIT AREA ======
+
+    const grid = document.getElementById("grid");
+    const search = document.getElementById("search");
+    const sort = document.getElementById("sort");
+
+    const priorityRank = { "Top": 0, "High": 1, "Medium": 2, "Low": 3 };
+
+    function safeText(v){ return (v ?? "").toString(); }
+    function money(v){
+      if (v === null || v === undefined || Number.isNaN(v)) return "Price: ask me";
+      return "$" + Number(v).toFixed(2);
+    }
+
+    function badgeClass(p){
+      const x = (p || "").toLowerCase();
+      if (x === "top") return "top";
+      if (x === "high") return "high";
+      if (x === "medium") return "mid";
+      return "low";
+    }
+
+    function render(list){
+      grid.innerHTML = "";
+      for (const g of list){
+        const card = document.createElement("div");
+        card.className = "card";
+        card.dataset.search = (g.name + " " + g.platform + " " + safeText(g.notes) + " " + safeText(g.priority)).toLowerCase();
+
+        card.innerHTML = `
+          <div class="badge ${badgeClass(g.priority)}">${safeText(g.priority) || "Priority"}</div>
+          <div class="cover">
+            ${g.cover ? `<img src="${g.cover}" alt="${safeText(g.name)} cover">` : ""}
+          </div>
+          <div class="info">
+            <p class="name">${safeText(g.name)}</p>
+            <div class="meta">
+              <span class="tag">${safeText(g.platform) || "Platform"}</span>
+              ${g.notes ? `<span class="tag">${safeText(g.notes)}</span>` : ""}
+            </div>
+            <div class="priceRow">
+              <div class="price">${money(g.price)}</div>
+              <a class="btn" href="${g.link}" target="_blank" rel="noopener">
+                Open store ↗
+              </a>
+            </div>
+          </div>
+        `;
+        grid.appendChild(card);
+      }
+      applyFilter(); // keep search working after rerender
+    }
+
+    function applyFilter(){
+      const q = search.value.trim().toLowerCase();
+      for (const c of grid.children){
+        const hay = c.dataset.search || "";
+        c.classList.toggle("hidden", q && !hay.includes(q));
+      }
+    }
+
+    function sortGames(){
+      const mode = sort.value;
+      const copy = [...games];
+
+      if (mode === "priority"){
+        copy.sort((a,b) => (priorityRank[a.priority] ?? 9) - (priorityRank[b.priority] ?? 9));
+      } else if (mode === "priceLow"){
+        copy.sort((a,b) => (a.price ?? 1e9) - (b.price ?? 1e9));
+      } else if (mode === "priceHigh"){
+        copy.sort((a,b) => (b.price ?? -1) - (a.price ?? -1));
+      } else if (mode === "name"){
+        copy.sort((a,b) => safeText(a.name).localeCompare(safeText(b.name)));
+      }
+
+      render(copy);
+    }
+
+    search.addEventListener("input", applyFilter);
+    sort.addEventListener("change", sortGames);
+
+    // first load
+    sortGames();
+  </script>
+</body>
+</html>
